@@ -1,23 +1,27 @@
-"use client"
-import { useForm, Controller } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Dumbbell, Loader } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import { Label } from '@radix-ui/react-label';
-import { BirthdayCalendar } from '@/shared/ui/birthday-calendar';
-import { registrationSchema } from '../model/validation/registration-schema';
-import { registrationDefaultFormValues } from '../model/constants/registration-constants';
-import type { RegistrationFormValues } from '../model/types';
-import { useRegistrationMutation } from '../model/hooks/use-registration-mutation';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '@/shared/config/router/routes';
+"use client";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/shared/ui/card";
+import { Dumbbell, Loader } from "lucide-react";
+import { Button } from "@/shared/ui/button";
+import { Input } from "@/shared/ui/input";
+import { Label } from "@radix-ui/react-label";
+import { registrationSchema } from "../model/validation/registration-schema";
+import { registrationDefaultFormValues } from "../model/constants/registration-constants";
+import type { RegistrationFormValues } from "../model/types";
+import { useRegistrationMutation } from "../model/hooks/use-registration-mutation";
+import { Link } from "react-router-dom";
+import { ROUTES } from "@/shared/config/router/routes";
+import { SignInWithGoogleButton } from "@/features/auth/sign-In-with-google";
 
 export const RegistrationPage = () => {
   const registrationMutation = useRegistrationMutation();
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<RegistrationFormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<RegistrationFormValues>({
     resolver: zodResolver(registrationSchema),
     defaultValues: registrationDefaultFormValues,
   });
@@ -39,71 +43,62 @@ export const RegistrationPage = () => {
           <CardDescription>Создайте аккаунт для доступа к CRM системе</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="firstName">Имя</Label>
-                <Input id="firstName" {...register('firstName')} disabled={registrationMutation.isPending} />
-                {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName.message}</p>}
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="lastName">Фамилия</Label>
-                <Input id="lastName" {...register('lastName')} disabled={registrationMutation.isPending} />
-                {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName.message}</p>}
-              </div>
-            </div>
-
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-3">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" {...register('email')} disabled={registrationMutation.isPending} />
+              <Input
+                id="email"
+                type="email"
+                {...register("email")}
+                disabled={registrationMutation.isPending}
+              />
               {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Номер телефона</Label>
-              <Input id="phone" type="tel" {...register('phone')} disabled={registrationMutation.isPending} />
-              {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
-            </div>
-
-            <div className="space-y-2">
-              <Controller
-                control={control}
-                name="birthDate"
-                render={({ field }) => (
-                  <BirthdayCalendar
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.birthDate && <p className="text-red-500 text-sm">{errors.birthDate.message}</p>}
-            </div>
-
-            <div className="space-y-2">
               <Label htmlFor="password">Пароль</Label>
-              <Input id="password" type="password" {...register('password')} disabled={registrationMutation.isPending} />
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                disabled={registrationMutation.isPending}
+              />
               {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="confirmPassword">Подтвердите пароль</Label>
-              <Input id="confirmPassword" type="password" {...register('confirmPassword')} disabled={registrationMutation.isPending} />
-              {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
+              <Input
+                id="confirmPassword"
+                type="password"
+                {...register("confirmPassword")}
+                disabled={registrationMutation.isPending}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>
+              )}
             </div>
 
             <Button type="submit" className="w-full" disabled={registrationMutation.isPending}>
-              {registrationMutation.isPending ? <Loader className="animate-spin" /> : 'Зарегистрироваться'}
+              {registrationMutation.isPending ? (
+                <Loader className="animate-spin" />
+              ) : (
+                "Зарегистрироваться"
+              )}
             </Button>
-
             <p className="text-center text-sm text-slate-600">
-              Уже есть аккаунт?{' '}
-              <Link to={ROUTES.auth.login.page} className="text-slate-900 font-medium hover:underline">
+              Уже есть аккаунт?{" "}
+              <Link
+                to={ROUTES.auth.login.page}
+                className="text-slate-900 font-medium hover:underline"
+              >
                 Войти
               </Link>
             </p>
           </form>
+          <SignInWithGoogleButton className="w-full" />
         </CardContent>
       </Card>
     </div>
   );
-}
+};
